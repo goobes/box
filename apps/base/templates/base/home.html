@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block hero %}
+<!-- header start -->
+<header id="header" class="header-wrapper home-parallax home-fade">
+    <div class="header-overlay"></div>
+    <div class="header-wrapper-inner">
+        <div class="container">
+
+            <div class="welcome-speech">
+                <h1>Goobe's Subscription Box</h1>
+                <p>We are never over-booked!</p>
+                <a href="#about" class="btn btn-white">
+                    About
+                </a>
+            </div><!-- /.intro -->
+            
+        </div><!-- /.container -->
+
+    </div><!-- /.header-wrapper-inner -->
+</header>
+<!-- /#header -->
+{% endblock %}
+
+{% block content %}
+<section class="intro bg-light-gray" id="about">
+<div class="container">
+  <div class="row">
+    <div class="col-md-5">
+        <img src="{% static 'img/attention_span.jpg' %}" class="img-responsive center-block" alt="intro">
+    </div>
+
+                    <div class="col-md-7">
+                        <div class="intro-description">
+                            <h2>Subscription Box</h2>
+                            <p>
+                            The service provides you with upto 3 books each month, both new and used. Tell us about your favourite books and authors, and we will have our group of book geeks suggest titles that you may find interesting.
+                            </p>
+
+                            <ul class="points">
+                                <li><h4>Why?</h4></li>
+                                <li>
+                                    <span>
+                                        <i class="fa fa-star"></i>
+                                    </span>
+                                    Sometimes the most influential books in our lives were gotten through chance encounters.
+                                </li>
+                                <li>
+                                    <span>
+                                        <i class="fa fa-star"></i>
+                                    </span>
+                                    Everyone suggests books from the NY Times bestsellers list.
+                                </li>
+                                <li>
+                                    <span>
+                                        <i class="fa fa-star"></i>
+                                    </span>
+                                    Amazon's related searches keeps you in a filter bubble of the same voices.
+                                </li>
+                                <li>
+                                    <span>
+                                        <i class="fa fa-star"></i>
+                                    </span>
+                                    And who doesn't like a surprise? And one every month (or three)!
+                                </li>
+                            </ul> <!-- end of /.points -->
+
+                            <a href="#purchase" class="btn btn-slategray">
+                                purchase
+                            </a> <!-- /purchase button -->
+                        </div> <!-- end of /.intro-description -->
+                    </div>
+                </div>
+            </div> <!-- end of /.container -->
+        </section> 
+        <!--  end of intro section -->
+
+
+
+        <!-- begin pricing section -->
+        <section class="bg-light-gray" id="purchase">
+            <div class="container">
+
+                <div class="headline text-center">
+                    <div class="row">
+                        <div class="col-md-6 col-md-offset-3">
+                            <h2 class="section-title">affordable pricing</h2>
+                            <p class="section-sub-title">
+                                You can't put a price on a surprise book, or a bunch of them
+                            </p> <!-- /.section-sub-title -->
+                        </div>
+                    </div>
+                </div> <!-- /.headline -->
+
+                <div class="row">
+                {% for item in items %}
+                    <div class="col-md-4 col-sm-6">
+                        <div class="price-box">
+                            <h3>{{ item.name }}</h3>
+                            <div class="price-info">
+                                <span>{{ item.boxes_added }} months</span>
+                                <p class="price"><sup>₹</sup><span>{{ item.price }}</span></p>
+                            </div>
+                            <a href="{% url 'payment-create' pk=item.id %}" class="btn pricing-btn">Buy Now</a>
+                        </div>    
+                    </div>
+                {% endfor %}
+                </div>
+            </div>
+        </section>
+        <!-- end of pricing section -->
+
+{% endblock %}

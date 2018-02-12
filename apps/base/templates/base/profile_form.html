@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" integrity="sha256-rByPlHULObEjJ6XQxW/flG2r+22R5dKiAoef+aXWfik=" crossorigin="anonymous" />
+<style>
+label {
+  vertical-align: top;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section>
+ <div class="container">
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+            <form action="" method="post">
+              {% csrf_token %}
+            <ul class="nav nav-tabs" id="wizard">
+                <li class="nav-item active">
+                    <a href="#address" data-toggle="tab" aria-controls="address" role="tab" title="Address">Address</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#genres" data-toggle="tab" aria-controls="genres" role="tab" title="Genres">Genres</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#favourites" data-toggle="tab" aria-controls="favourites" role="tab" title="Favourites">Favourites</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="address">
+                    {{ form.errors }}
+                    {% include "base/_form_field.html" with field=form.address %}
+                    {% include "base/_form_field.html" with field=form.city %}
+                    {% include "base/_form_field.html" with field=form.state %}
+                    {% include "base/_form_field.html" with field=form.postal_code %}
+                    {% include "base/_form_field.html" with field=form.phone_mobile %}
+                    {% include "base/_form_field.html" with field=form.phone_landline %}
+                    <div class="row">
+                        <div class="col-sm-2 col-sm-offset-4">
+                          <a href="#genres" class="btn btn-dark" data-toggle="tab" aria-controls="genres" role="tab" onclick="javascript:stepGenres()">Next</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="genres">
+                    {{ form.genres }}
+                    <div class="row">
+                        <div class="col-sm-2">
+                          <a href="#address" class="btn btn-light" data-toggle="tab" aria-controls="address" role="tab" onclick="javascript:stepAddress()">Previous</a>
+                        </div>
+                        <div class="col-sm-2 col-sm-offset-2">
+                          <a href="#favourites" class="btn btn-dark" data-toggle="tab" aria-controls="favourites" role="tab" onclick="javascript:stepFavourites()">Next</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="favourites">
+                    <div class="row">
+                        <div class="col-sm-3"><input class="form-control" placeholder="Book Title" type="text" id="id_books"> </div>
+                        <div class="col-sm-3"><input class="form-control" placeholder="Author Name" type="text" id="id_authors"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <select name="favourite_books" multiple="multiple" id="id_favourite_books">
+                            {% for book in object.favourite_books.all %}
+                            <option value="{{ book.id }}" selected="selected">{{ book.title }}</option>
+                            {% endfor %}
+                            </select>
+                            
+                        </div>
+                        <div class="col-sm-4 col-sm-offset-1">
+                            <select name="favourite_authors" multiple="multiple" id="id_favourite_authors">
+                            {% for author in object.favourite_authors.all %}
+                            <option value="{{ author.id }}" selected="selected">{{ author.name }}</option>
+                            {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2">
+                    <a href="#genres" class="btn btn-light" data-toggle="tab" aria-controls="genres" role="tab" onclick="javascript:stepGenres()">Previous</a>
+                        </div>
+                        <div class="col-sm-2 col-sm-offset-1">
+                            <button type="submit" class="btn btn-primary" onclick="javascript:submit()">Finish</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </form>
+        </div>
+    </div>
+ </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" integrity="sha256-KM512VNnjElC30ehFwehXjx1YCHPiQkOPmqnrWtpccM=" crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+function stepAddress() {
+  $("#wizard li").removeClass("active");
+  $("#wizard li")[0].classList.add("active");
+}
+
+function stepGenres() {
+  $("#wizard li").removeClass("active");
+  $("#wizard li")[1].classList.add("active");
+}
+
+function stepFavourites() {
+  $("#wizard li").removeClass("active");
+  $("#wizard li")[2].classList.add("active");
+}
+
+function submit() {
+  $("#id_favourite_books option").prop("selected", true);
+  $("#id_favourite_authors aoption").prop("selected", true);
+  return false;
+}
+
+$(function() {
+  var getBooks = function(request, response) {
+    $.getJSON("/api/books/?q=" + request.term, function(data) {
+      var resp = [];
+      var data = JSON.parse(data);
+      for(var i in data) {
+          resp.push({label: data[i].fields.title, value: data[i].pk});
+      }
+      response(resp);
+    });
+  };
+
+  var getAuthors = function(request, response) {
+    $.getJSON("/api/authors/?name=" + request.term, function(data) {
+      var resp = [];
+      var data = JSON.parse(data);
+      for(var i in data) {
+          resp.push({label: data[i].fields.name, value: data[i].pk});
+      }
+      response(resp);
+    });
+  };
+
+  $("#id_books").autocomplete({
+    source: getBooks,
+    select: function(evt, ui) {
+        //ensure that the book is unique in the select
+        $("#id_favourite_books option").each(function(i, o) { 
+          if (o.value == ui.item.value) {
+            $("#id_books").val("");
+            return false;
+          }
+        });
+        $("#id_favourite_books").append($("<option value='" + ui.item.value + "' selected='selected'>" + ui.item.label + "</option>"));
+        $("#id_books").val("");
+        return false;
+    },
+    minLength: 4
+  });
+
+  $("#id_authors").autocomplete({
+      source: getAuthors,
+      select: function(evt, ui) {
+        $("#id_favourite_authors option").each(function(i, o) {
+          if (o.value == ui.item.value) {
+            $("#id_authors").val("");
+            return false;
+          }
+        });
+
+        $("#id_favourite_authors").append($("<option value='" + ui.item.value + "' selected='selected'>" + ui.item.label + "</option>"));
+        $("#id_authors").val("");
+        return false;
+      },
+      minLength: 4
+  });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load socialaccount %}
+
+{% block content %}
+<section>
+  <div class="container">
+      <div class="row">
+          <div class="col-md-4">
+              <h1>Profile Details</h1>
+          </div>
+      </div>
+      <div class="row">
+          <div class="col-md-4">
+            {{ object.user.username }}
+          </div>
+      </div>
+      {% if user == object.user %}
+      <div class="row">
+          <div class="col-md-4">
+              <h2>Address/Contact Details</h2>
+          </div>
+      </div>
+      <div class="row">
+          <div class="col-md-2">Address</div>
+          <div class="col-md-2">{{ object.address|linebreaks }}</div>
+      </div>
+      <div class="row">
+          <div class="col-md-2">City</div>
+          <div class="col-md-2">{{ object.city }}</div>
+      </div>
+      <div class="row">
+          <div class="col-md-2">State</div>
+          <div class="col-md-2">{{ object.get_state_display }}</div>
+      </div>
+      <div class="row">
+          <div class="col-md-2">PIN Code</div>
+          <div class="col-md-2">{{ object.postal_code }}</div>
+      </div>
+      <div class="row">
+          <div class="col-md-2">Mobile</div>
+          <div class="col-md-2">{{ object.phone_mobile }}</div>
+      </div>
+      <div class="row">
+          <div class="col-md-2">Landline</div>
+          <div class="col-md-2">{{ object.phone_landline }}</div>
+      </div>
+      <div class="row">
+          <div class="col-md-5">
+              <h2>Social Accounts</h2>
+          </div>
+      </div>
+
+      {% get_social_accounts user as accounts %}
+      <div class="row well">
+          <div class="col-md-6">
+          {% if accounts.facebook.0 %}
+            Congratulations you have linked your Facebook account
+          {% else %}
+            No linked Facebook account
+            <a href="{% provider_login_url 'facebook' process='connect' %}" class="btn">Connect Facebook</a>
+          {% endif %}
+          </div>
+      </div>
+      <div class="row well">
+          <div class="col-md-6">
+          {% if accounts.goodreads.0 %}
+            Congratulations you have linked your Goodreads account. We can now make useful recommendations based on books you have read and reviewed.
+          {% else %}
+            There is no linked Goodreads account. Please connect your Goodreads account so we can make useful recommendations based on books you have read and reviewed.
+            <a href="{% provider_login_url 'goodreads' process='connect' %}" class="btn">Connect Goodreads</a>
+          {% endif %}
+          </div>
+      </div>
+
+      {% endif %} {# endif user == object.user #}
+
+      <div class="row">
+          <div class="col-md-4">
+              <h2>Genres</h2>
+          </div>
+      </div>
+      <div class="row">
+          <div class="col-md-4">
+            {% for genre in object.genres.all %}
+            <li>{{ genre }}</li>
+            {% endfor %}
+          </div>
+      </div>
+      <div class="row">
+          <div class="col-md-4">
+              <h2>Favourite Books and Authors</h2>
+          </div>
+      </div>
+      <div class="row">
+          <div class="col-md-2">
+              <h3>Books</h3>
+            {% for book in object.favourite_books.all %}
+              <li>{{ book.title }}</li>
+            {% endfor %}
+          </div> 
+          <div class="col-md-2">
+              <h3>Authors</h3>
+            {% for author in object.favourite_authors.all %}
+              <li>{{ author.name }}</li>
+            {% endfor %}
+          </div>
+      </div>
+  </div>
+</section>
+{% include "socialaccount/snippets/login_extra.html" %}
+{% endblock %}
