@@ -61,8 +61,8 @@ class Author(models.Model):
     name = models.CharField(max_length=255)
     ol_id = models.CharField(max_length=16, unique=True)
     alternate_names = models.CharField(max_length=512, blank=True)
-    year_of_birth = models.CharField(max_length=10)
-    year_of_death = models.CharField(max_length=10)
+    year_of_birth = models.CharField(max_length=50)
+    year_of_death = models.CharField(max_length=50)
 
     def __str__(self):
         return "<Author: %s>" % self.name
@@ -74,7 +74,7 @@ class Book(models.Model):
     genres = models.ManyToManyField(Genre)
     authors = models.ManyToManyField(Author)
     publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE)
-    year_of_publication = models.CharField(max_length=10)
+    year_of_publication = models.CharField(max_length=50)
 
     def __str__(self):
         return "<Book: %s>" % self.title
