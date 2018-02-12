@@ -60,7 +60,7 @@ class Publisher(models.Model):
 class Author(models.Model):
     name = models.CharField(max_length=255)
     ol_id = models.CharField(max_length=16, unique=True)
-    alternate_names = models.CharField(max_length=512, blank=True)
+    alternate_names = models.CharField(max_length=1024, blank=True)
     year_of_birth = models.CharField(max_length=50)
     year_of_death = models.CharField(max_length=50)
 
@@ -68,7 +68,7 @@ class Author(models.Model):
         return "<Author: %s>" % self.name
 
 class Book(models.Model):
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=512)
     ol_id = models.CharField(max_length=16, unique=True)
     isbn = models.CharField(max_length=20)
     genres = models.ManyToManyField(Genre)
