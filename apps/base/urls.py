@@ -18,5 +18,7 @@ urlpatterns = [
     url(r'^api/authors/$', search_author_name, name='search-author'),
     url(r'^payment/create/(?P<pk>[^/]+)$', make_payment, name='payment-create'),
     url(r'^payment/redirect/(?P<pk>[^/]+)$', payment_redirect, name='payment-redirect'),
-    url(r'^shop/$', ItemList.as_view(), name='shop')
+    url(r'^shop/$', ItemList.as_view(), name='shop'),
+    url(r'^privacy/$', TemplateView.as_view(template_name="base/privacy.html"), name="privacy"),
+    url(r'^tos/$', TemplateView.as_view(template_name="base/tos.html"), name="tos"),
 ]
