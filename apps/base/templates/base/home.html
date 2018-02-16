@@ -95,10 +95,11 @@
 
                 <div class="row">
                 {% for item in items %}
-                    <div class="col-md-4 col-sm-6">
+                    <div class="col-md-3 col-sm-6">
                         <div class="price-box">
                             <h3>{{ item.name }}</h3>
                             <div class="price-info">
+                                <span>{{ item.description }}</span>
                                 <span>{{ item.boxes_added }} months</span>
                                 <p class="price"><sup>₹</sup><span>{{ item.price }}</span></p>
                             </div>
