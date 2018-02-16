@@ -86,13 +86,15 @@ class Command(BaseCommand):
                     if 'authors' in record:
                         try:
                             work.save()
-                        for author in record['authors']:
-                            try:
-                                work.authors.add(
-                                    Auhtor.objects.get(ol_id=author['author']['key'].split("/")[-1])
-                                )
-                            except: Author.DoesNotExist:
+                            for author in record['authors']:
+                                try:
+                                    work.authors.add(
+                                        Auhtor.objects.get(ol_id=author['author']['key'].split("/")[-1])
+                                    )
+                                except: Author.DoesNotExist:
                                 work.authors.add(default_author)
+                        except:
+                            pass
 
                     try:
                         work.save()
