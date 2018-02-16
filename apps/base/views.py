@@ -96,20 +96,12 @@ def payment_webhook(request):
         payment.shorturl = data['shorturl']
 
         if payment.status == 'Credit':
-            if payment.user.profile.paid_till:
-                start = payment.user.profile.paid_till
-            else:
-                start = datetime.today()
-            payment.user.profile.paid_till = start + timedelta(days=payment.item.days_added)
+            payment.user.profile.boxes_remaining = payment.user.profile.boxes_remaining + payment.item.boxes_added
             payment.user.profile.save()
         payment.save()
         return HttpResponse(status_code=200)
     else:
         return HttpResponse(status_code=400)
-
-def profile_edit(request):
-
-    return render(request, 'base/profile_edit.html')
 
 class ProfileCreate(CreateView):
     model = Profile

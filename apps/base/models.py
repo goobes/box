@@ -98,7 +98,8 @@ class Profile(models.Model):
     genres = models.ManyToManyField(Genre)
     favourite_books = models.ManyToManyField(Book, blank=True)
     favourite_authors = models.ManyToManyField(Author, blank=True)
-    paid_till = models.DateField(null=True, blank=True)
+    boxes_remaining = models.IntegerField(default=0)
+    interests = models.CharField(max_length=1024, blank=True)
 
     def __str__(self):
         return "<Profile: %s>" % self.user
