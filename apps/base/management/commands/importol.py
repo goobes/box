@@ -23,8 +23,12 @@ class Command(BaseCommand):
                 count += 1
                 record = json.loads(row[4])
                 if row[0] == "/type/author":
-                    author = Author(name=record['name'],
-                        ol_id=row[1].split("/")[-1])
+                    try:
+                        author = Author(name=record['name'],
+                            ol_id=row[1].split("/")[-1])
+                    except KeyError:
+                        print("No author name found: {}".format(row[1].split("/")[-1]))
+                        continue
                     if 'personal_name' in record:
                         author.alternate_names = record['personal_name']
                     if "alternate_names" in record:
@@ -91,8 +95,8 @@ class Command(BaseCommand):
                                     work.authors.add(
                                         Auhtor.objects.get(ol_id=author['author']['key'].split("/")[-1])
                                     )
-                                except: Author.DoesNotExist:
-                                work.authors.add(default_author)
+                                except Author.DoesNotExist:
+                                    work.authors.add(default_author)
                         except:
                             pass
 
