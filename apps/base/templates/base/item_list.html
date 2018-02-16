@@ -3,19 +3,21 @@
 {% block content %}
 <section>
     <div class="container">
-        {% for item in object_list %}
         <div class="row">
-            <div class="col-sm-1">{{ item.name }}</div>
-            <div class="col-sm-2">{{ item.description }}</div>
-            {% if item.image %}
-            <div class="col-sm-2"><img src="{{ item.image.url }}"></div>
-            {% endif %}
-            <div class="col-sm-2">₹{{ item.price }}</div>
-            <div class="col-sm-2">
-                <a href="{% url 'payment-create' pk=item.id %}" class="btn btn-primary">Buy Now</a>
-            </div>
-        </div>
+        {% for item in object_list %}
+            <div class="col-md-3 col-sm-6">
+               <div class="price-box">
+                 <h3>{{ item.name }}</h3>
+                 <div class="price-info">
+                   <span>{{ item.description }}</span>
+                   <span>{{ item.boxes_added }} months</span>
+                   <p class="price"><sup>₹</sup><span>{{ item.price }}</span></p>
+                 </div>
+                 <a href="{% url 'payment-create' pk=item.id %}" class="btn pricing-btn">Buy Now</a>
+                </div>    
+             </div>
         {% endfor %}
+        </div>
     </div>
 </section>
 {% endblock %}
