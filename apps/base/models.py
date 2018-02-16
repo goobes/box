@@ -61,20 +61,28 @@ class Author(models.Model):
     name = models.CharField(max_length=255)
     ol_id = models.CharField(max_length=16, unique=True)
     alternate_names = models.CharField(max_length=1024, blank=True)
-    year_of_birth = models.CharField(max_length=50)
-    year_of_death = models.CharField(max_length=50)
+    year_of_birth = models.CharField(max_length=50, blank=True)
+    year_of_death = models.CharField(max_length=50, blank=True)
 
     def __str__(self):
         return "<Author: %s>" % self.name
 
-class Book(models.Model):
-    title = models.CharField(max_length=512)
+class Work(models.Model):
+    title = models.CharField(max_length=1024)
     ol_id = models.CharField(max_length=16, unique=True)
-    isbn = models.CharField(max_length=20)
+    authors = models.ManyToManyField(Author)
+
+    def __str__(self):
+        return "<Work: %s>" % self.title
+
+class Book(models.Model):
+    title = models.CharField(max_length=1024)
+    ol_id = models.CharField(max_length=16, unique=True)
+    isbn = models.CharField(max_length=20, blank=True)
     genres = models.ManyToManyField(Genre)
     authors = models.ManyToManyField(Author)
     publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE)
-    year_of_publication = models.CharField(max_length=50)
+    year_of_publication = models.CharField(max_length=50, blank=True)
 
     def __str__(self):
         return "<Book: %s>" % self.title
