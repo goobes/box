@@ -29,7 +29,7 @@ else:
 
 def home(request):
     """ Default view for the root """
-    items = Item.objects.all()
+    items = Item.objects.order_by("pk").all()
     return render(request, 'base/home.html', context={'items': items})
 
 def check_profile(request):
@@ -137,3 +137,4 @@ class ProfileDetail(DetailView):
 class ItemList(ListView):
     model = Item
 
+    ordering = ['pk']
