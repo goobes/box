@@ -2,5 +2,5 @@ from django.apps import AppConfig
 
 
 class BaseConfig(AppConfig):
-    name = 'goobes'
+    name = 'base'
     verbose_name = "Goobe's Subscription Box"
