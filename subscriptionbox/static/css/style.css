@@ -1898,3 +1898,9 @@ Tags: responsive layout, multiple-page
     background-color: #553b08;
     color: white;
 }
+
+#shop {
+    background: url(../img/giftboxribbon.jpg) no-repeat center center;
+    background-attachment: fixed;
+    background-size: cover;
+}
