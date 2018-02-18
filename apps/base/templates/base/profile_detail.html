@@ -13,6 +13,9 @@
           <div class="col-md-4">
             {{ object.user.username }}
           </div>
+          <div class="col-md-4">
+              <a href="{% url 'profile-edit' %}" class="btn btn-primary">Edit</a>
+          </div>
       </div>
       {% if user == object.user %}
       <div class="row">
@@ -57,7 +60,7 @@
             Congratulations you have linked your Facebook account
           {% else %}
             No linked Facebook account
-            <a href="{% provider_login_url 'facebook' process='connect' %}" class="btn">Connect Facebook</a>
+            <a href="{% provider_login_url 'facebook' process='connect' %}" class="btn socialaccount_provider facebook">Connect Facebook</a>
           {% endif %}
           </div>
       </div>
@@ -67,7 +70,7 @@
             Congratulations you have linked your Goodreads account. We can now make useful recommendations based on books you have read and reviewed.
           {% else %}
             There is no linked Goodreads account. Please connect your Goodreads account so we can make useful recommendations based on books you have read and reviewed.
-            <a href="{% provider_login_url 'goodreads' process='connect' %}" class="btn">Connect Goodreads</a>
+            <a href="{% provider_login_url 'goodreads' process='connect' %}" class="btn socialaccount_provider goodreads">Connect Goodreads</a>
           {% endif %}
           </div>
       </div>
