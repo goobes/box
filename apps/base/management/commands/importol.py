@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
-from base.models import Genre, Book, Author, Publisher
+from base.models import Genre, Book, Author, Publisher, Work
 import csv
 import json
 import sys
@@ -17,6 +17,7 @@ class Command(BaseCommand):
         default_author = Author.objects.get(pk=options['default_author'])
         default_publisher = Publisher.objects.get(pk=options['default_publisher'])
         count = 0
+        csv.field_size_limit(sys.maxsize)
         with open(options['ol_dump']) as f:
             reader = csv.reader(f, delimiter='\t')
             for row in reader:
