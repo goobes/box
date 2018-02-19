@@ -50,7 +50,7 @@ class Genre(models.Model):
         return u"%s" % self.name
 
 class Publisher(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, db_index=True)
     country = models.CharField(max_length=64, blank=True)
     website = models.URLField(blank=True)
 
@@ -58,17 +58,21 @@ class Publisher(models.Model):
         return "<Publisher: %s>" % self.name
 
 class Author(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, db_index=True)
     ol_id = models.CharField(max_length=16, unique=True)
-    alternate_names = models.CharField(max_length=1024, blank=True)
+    alternate_names = models.CharField(max_length=1024, blank=True, db_index=True)
     year_of_birth = models.CharField(max_length=50, blank=True)
     year_of_death = models.CharField(max_length=50, blank=True)
+
+    class Meta:
+        ordering = ['name']
 
     def __str__(self):
         return "<Author: %s>" % self.name
 
+
 class Work(models.Model):
-    title = models.CharField(max_length=1024)
+    title = models.CharField(max_length=1024, db_index=True)
     ol_id = models.CharField(max_length=16, unique=True)
     authors = models.ManyToManyField(Author)
 
@@ -76,9 +80,9 @@ class Work(models.Model):
         return "<Work: %s>" % self.title
 
 class Book(models.Model):
-    title = models.CharField(max_length=1024)
+    title = models.CharField(max_length=1024, db_index=True)
     ol_id = models.CharField(max_length=16, unique=True)
-    isbn = models.CharField(max_length=20, blank=True)
+    isbn = models.CharField(max_length=20, blank=True, db_index=True)
     genres = models.ManyToManyField(Genre)
     authors = models.ManyToManyField(Author)
     publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE)
@@ -90,9 +94,9 @@ class Book(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     address = models.CharField(max_length=255)
-    city = models.CharField(max_length=64)
-    state = models.CharField(max_length=2, choices=STATES)
-    postal_code = models.CharField(max_length=8)
+    city = models.CharField(max_length=64, db_index=True)
+    state = models.CharField(max_length=2, choices=STATES, db_index=True)
+    postal_code = models.CharField(max_length=8, db_index=True)
     phone_mobile = models.CharField(max_length=13)
     phone_landline = models.CharField(max_length=20, blank=True)
     genres = models.ManyToManyField(Genre)
@@ -121,7 +125,7 @@ class Item(models.Model):
 class Payment(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
-    payment_date = models.DateField()
+    payment_date = models.DateTimeField(db_index=True)
     payment_id = models.CharField(max_length=64)
     payment_request_id = models.CharField(max_length=64)
     amount = models.DecimalField(max_digits=7, decimal_places=2)
