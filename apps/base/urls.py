@@ -5,7 +5,7 @@ from django.views.generic import TemplateView
 
 from .views import ( home, ProfileCreate, ProfileUpdate, ProfileDetail, 
         search_book_title, search_author_name, check_profile )
-from .views import make_payment, payment_redirect, ItemList
+from .views import make_payment, payment_redirect, payment_webhook, ItemList
 
 urlpatterns = [
     url(r'^$', home, name='home'),
@@ -18,6 +18,7 @@ urlpatterns = [
     url(r'^api/authors/$', search_author_name, name='search-author'),
     url(r'^payment/create/(?P<pk>[^/]+)$', make_payment, name='payment-create'),
     url(r'^payment/redirect/(?P<pk>[^/]+)$', payment_redirect, name='payment-redirect'),
+    url(r'^payment/webhook/$', payment_webhook, name='payment-webhook'),
     url(r'^shop/$', ItemList.as_view(), name='shop'),
     url(r'^privacy/$', TemplateView.as_view(template_name="base/privacy.html"), name="privacy"),
     url(r'^tos/$', TemplateView.as_view(template_name="base/tos.html"), name="tos"),

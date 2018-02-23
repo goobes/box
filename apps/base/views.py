@@ -2,7 +2,7 @@
 
 from django.shortcuts import render, redirect
 from django.contrib.auth import get_user_model
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import CreateView, UpdateView, FormView
 from django.views.generic import DetailView
 from django.views.generic.list import ListView
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
@@ -54,13 +54,24 @@ def make_payment(request, pk):
             item=item,
             payment_date=datetime.today(),
             amount=item.price)
-    response = payment_api.payment_request_create(
+    if settings.DEBUG:
+        response = payment_api.payment_request_create(
             amount=item.price,
             purpose=item.name,
             send_email=True,
             email=request.user.email,
             redirect_url=request.build_absolute_uri(reverse('payment-redirect', kwargs={'pk': payment.id}))
             )
+    else:
+        response = payment_api.payment_request_create(
+            amount=item.price,
+            purpose=item.name,
+            send_email=True,
+            email=request.user.email,
+            redirect_url=request.build_absolute_uri(reverse('payment-redirect', kwargs={'pk': payment.id})),
+            webhook=request.build_absolute_uri(reverse('payment-webhook'))
+            )
+
     if response['success']:
         payment.payment_request_id = response['payment_request']['id']
         payment.save()
@@ -88,6 +99,7 @@ def payment_webhook(request):
     message = "|".join(v for k, v in sorted(data.items(), key=lambda x: x[0].lower()))
     mac_calculated = hmac.new(settings.INSTAMOJO['SALT'], message, hashlib.sha1).hexdigest()
     if mac_calculated == mac:
+        payment = Payment.objects.get(payment_request_id=data['payment_request_id'])
         payment.payment_id = data['payment_id']
         payment.payment_request_id = data['payment_request_id']
         payment.status = data['status']
