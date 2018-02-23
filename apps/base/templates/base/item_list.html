@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 <section id="shop">
@@ -11,7 +12,7 @@
                  <div class="price-info">
                    <span>{{ item.description }}</span>
                    <span>{{ item.boxes_added }} months</span>
-                   <p class="price"><sup>₹</sup><span>{{ item.price }}</span></p>
+                   <p class="price"><span><img src="{% static 'img/rupee.png' %}" style="float: left">{{ item.price }}</span></p>
                  </div>
                  <a href="{% url 'payment-create' pk=item.id %}" class="btn pricing-btn">Buy Now</a>
                 </div>    

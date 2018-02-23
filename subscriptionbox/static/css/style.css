@@ -1904,3 +1904,8 @@ Tags: responsive layout, multiple-page
     background-attachment: fixed;
     background-size: cover;
 }
+
+.price-box .price-info .price span {
+    font-size: 32px;
+    margin-left: -50px;
+}
