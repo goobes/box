@@ -12,10 +12,15 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from instamojo_wrapper import Instamojo
 from datetime import datetime, timedelta
+import logging
+import hmac
+import hashlib
 
 from .models import Genre, Author, Publisher, Book, Profile, Item, Payment
 from .forms import ProfileForm
 from utils import has_profile
+
+logger = logging.getLogger(__name__)
 
 User = get_user_model()
 
@@ -75,6 +80,8 @@ def make_payment(request, pk):
     if response['success']:
         payment.payment_request_id = response['payment_request']['id']
         payment.save()
+    else:
+        logger.error("make_payment: payment gateway failed: %s" % response['message'])
     return render(request, 'base/payment_create.html',
                     {
                     'item': item,
@@ -90,6 +97,8 @@ def payment_redirect(request, pk):
     payment.payment_request_id = request.GET.get("payment_request_id")
     payment.save()
 
+    logger.info("payment_redirect: payment_id - {}".format(payment.payment_id))
+    logger.info("payment_redirect: payment_request_id - {}".format(payment.payment_request_id))
     return render(request, 'base/payment_complete.html')
 
 
@@ -98,6 +107,8 @@ def payment_webhook(request):
     mac = data.pop("mac")
     message = "|".join(v for k, v in sorted(data.items(), key=lambda x: x[0].lower()))
     mac_calculated = hmac.new(settings.INSTAMOJO['SALT'], message, hashlib.sha1).hexdigest()
+    logger.info("payment_webhook: mac - {}".format(mac))
+    logger.info("payment_webhook: calculated mac - {}".format(mac_calculated))
     if mac_calculated == mac:
         payment = Payment.objects.get(payment_request_id=data['payment_request_id'])
         payment.payment_id = data['payment_id']
@@ -113,6 +124,7 @@ def payment_webhook(request):
         payment.save()
         return HttpResponse(status_code=200)
     else:
+        logger.error("webhook failed mac calculation")
         return HttpResponse(status_code=400)
 
 class ProfileCreate(CreateView):
