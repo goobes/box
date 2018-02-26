@@ -13,9 +13,11 @@
           <div class="col-md-4">
             {{ object.user.username }}
           </div>
+          {% if user == object.user %}
           <div class="col-md-4">
               <a href="{% url 'profile-edit' %}" class="btn btn-primary">Edit</a>
           </div>
+          {% endif %}
       </div>
       {% if user == object.user or user.is_superuser %}
       <div class="row">
