@@ -1,5 +1,7 @@
 
 from django.contrib import admin
+from django.utils.safestring import mark_safe
+from allauth.socialaccount.models import SocialAccount
 from .models import Genre, Publisher, Author, Book, Profile, Item, Payment
 
 for m in [Genre, Publisher, Item]:
@@ -27,6 +29,17 @@ class PaymentAdmin(admin.ModelAdmin):
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
     fields = ('user', 'address', 'city', 'state', 'postal_code', ('phone_mobile', 'phone_landline'),
-            'genres', 'favourite_books', 'favourite_authors', 'interests', 'boxes_remaining')
-    readonly_fields = ( 'favourite_books', 'favourite_authors', 'interests' )
+            'genres', 'favourite_books', 'favourite_authors', 'interests', 'boxes_remaining', 'goodreads_link',
+            'profile_link')
+    readonly_fields = ( 'favourite_books', 'favourite_authors', 'interests', 
+            'goodreads_link', 'profile_link' )
 
+    def goodreads_link(self, obj):
+        sa = SocialAccount.objects.filter(user=obj.user, provider='goodreads').first()
+        if sa:
+            return mark_safe("<a href='https://www.goodreads.com/user/show/{0}'>https://www.goodreads.com/user/show/{0}</a>".format(sa.uid))
+        else:
+            return ""
+
+    def profile_link(self, obj):
+        return mark_safe("<a href='{}'>View profile</a>".format(obj.get_absolute_url()))

@@ -10,6 +10,11 @@
           </div>
       </div>
       <div class="row">
+          <div class="col-md-6">
+            goodreads: {{ goodreads.extra_data.user.updates.update.0.object.read_status.review.book.title }}
+          </div>
+      </div>
+      <div class="row">
           <div class="col-md-4">
             {{ object.user.username }}
           </div>
@@ -17,7 +22,7 @@
               <a href="{% url 'profile-edit' %}" class="btn btn-primary">Edit</a>
           </div>
       </div>
-      {% if user == object.user %}
+      {% if user == object.user or user.is_superuser %}
       <div class="row">
           <div class="col-md-4">
               <h2>Address/Contact Details</h2>
@@ -74,6 +79,27 @@
           {% endif %}
           </div>
       </div>
+
+      {% if user.is_superuser and goodreads %}
+      <div class="row">
+          <div class='col-md-6'>
+              Goodreads profile information: <a href="https://www.goodreads.com/user/show/{{ goodreads.uid }}">link</a><br>
+              <ul>
+              Goodreads books
+              {% for book in goodreads.extra_data.user.updates.update %}
+              <li>
+                  {% if book.object %}
+                  {{ book.object.read_status.review.book.title }} by
+                  {{ book.object.read_status.review.book.author.name }} |
+                  Rating: {{ book.object.read_status.review.rating }} |
+                  Status: {{ book.object.read_status.status }}
+                  {% endif %}
+              </li>
+              {% endfor %}
+              </ul>
+          </div>
+      </div>
+      {% endif %}
 
       {% endif %} {# endif user == object.user #}
 

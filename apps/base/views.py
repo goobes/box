@@ -15,6 +15,7 @@ from datetime import datetime, timedelta
 import logging
 import hmac
 import hashlib
+from allauth.socialaccount.models import SocialAccount
 
 from .models import Genre, Author, Publisher, Book, Profile, Item, Payment
 from .forms import ProfileForm
@@ -157,6 +158,11 @@ class ProfileUpdate(UpdateView):
 
 class ProfileDetail(DetailView):
     model = Profile
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['goodreads'] = SocialAccount.objects.filter(provider='goodreads', user=self.object.user).first()
+        return context
 
 class ItemList(ListView):
     model = Item
