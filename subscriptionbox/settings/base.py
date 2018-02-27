@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.facebook',
     'star_ratings',
+    'django_select2',
     # Local apps
     'base',
     'goodreads',

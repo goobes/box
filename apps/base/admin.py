@@ -47,6 +47,6 @@ class ProfileAdmin(admin.ModelAdmin):
 
 @admin.register(Box)
 class BoxAdmin(admin.ModelAdmin):
-    fields = ( 'user', 'shipped_at', 'books', 'payment')
-    list_display = ( 'user', 'created_at', 'shipped_at', )
+    fields = ( 'shipped_at', 'books', 'payment')
+    list_display = ( 'payment', 'created_at', 'shipped_at', )
     autocomplete_fields = ('books',)

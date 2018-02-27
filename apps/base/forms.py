@@ -1,6 +1,7 @@
 
 from django import forms
-from .models import Profile, Book, Author
+from django_select2.forms import ModelSelect2MultipleWidget
+from .models import Profile, Book, Author, Box
 
 class ProfileForm(forms.ModelForm):
     class Meta:
@@ -14,3 +15,11 @@ class ProfileForm(forms.ModelForm):
             'genres': forms.CheckboxSelectMultiple(),
             'interests': forms.Textarea(attrs={'rows': 5, 'cols': 48})
         }
+
+class BoxForm(forms.Form):
+    shipped = forms.BooleanField(required=False)
+    books = forms.ModelMultipleChoiceField(widget=ModelSelect2MultipleWidget(
+        queryset=Book.objects.all(),
+        search_fields=['title__icontains'],
+        attrs={'data-placeholder': 'Search for Book titles', 'data-width': '20em' }
+        ), queryset=Book.objects.all(), required=True)

@@ -19,6 +19,7 @@ urlpatterns = [
     url(r'', include('base.urls')),
     url(r'^accounts/', include('allauth.urls')), 
     url(r'^ratings/', include('star_ratings.urls', namespace='ratings')),
+    url(r'^select2/', include('django_select2.urls')),
     # Admin
     url(r'^admin/', admin.site.urls),
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

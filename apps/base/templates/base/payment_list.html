@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <h2>Payment Fulfillment</h2>
+                <a href="/admin/base/box">Admin view</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <table border="1" cellspacing="1" cellpadding="5">
+                    <thead>
+                        <th>User</th>
+                        <th>Payment Date</th>
+                        <th>Amount</th>
+                        <th>Boxes sent</th>
+                        <th>Action</th>
+                    </thead>
+                    <tbody>
+                    {% if object_list %}
+                      {% for object in object_list %}
+                      <tr>
+                          <td>{{ object.user }}</td>
+                          <td>{{ object.payment_date }}</td>
+                          <td>{{ object.amount }}</td>
+                          <td>{{ object.box_set.all.count }}</td>
+                          <td><a href="{% url 'box-create' pk=object.id %}" class="btn btn-primary">Create Box</a></td>
+                      </tr>
+                      {% endfor %}
+                    {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

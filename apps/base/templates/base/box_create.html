@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block head %}
+  {{ form.media.css }}
+{% endblock %}
+
+{% block content %}
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h2>Create Box</h2>
+                User:{{ payment.user }}<br>
+                Paid on: {{ payment.payment_date }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-10">
+                <form action="" method="post">
+                    {% csrf_token %}
+                  {{ form.as_p }}
+                  <button type="submit" class="btn btn-primary">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+  {{ form.media.js }}
+{% endblock %}

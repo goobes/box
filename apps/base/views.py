@@ -10,6 +10,7 @@ from django.core import serializers
 from django.conf import settings
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import UserPassesTestMixin
 from instamojo_wrapper import Instamojo
 from datetime import datetime, timedelta
 import logging
@@ -18,7 +19,7 @@ import hashlib
 from allauth.socialaccount.models import SocialAccount
 
 from .models import Genre, Author, Publisher, Book, Profile, Item, Payment, Box
-from .forms import ProfileForm
+from .forms import ProfileForm, BoxForm
 from utils import has_profile
 
 logger = logging.getLogger(__name__)
@@ -171,3 +172,36 @@ class ItemList(ListView):
 
 class BoxDetail(DetailView):
     model = Box
+
+class SuperUserMixin(UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.is_superuser
+
+class BoxCreate(SuperUserMixin, FormView):
+    model = Box
+    form_class = BoxForm
+    template_name = "base/box_create.html"
+
+    def get_success_url(self):
+        return reverse("payment-fulfillment")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['payment'] = Payment.objects.get(pk=self.kwargs['pk'])
+        return context
+
+    def form_valid(self, form):
+        payment = Payment.objects.get(pk=self.kwargs['pk'])
+        box = Box(payment=payment)
+        if form.cleaned_data['shipped']:
+            box.shipped_at = datetime.now()
+        box.save()
+        box.books.set(form.cleaned_data['books'])
+        if payment.box_set.count() >= payment.item.boxes_added:
+            payment.fulfilled = True
+            payment.save()
+        return super().form_valid(form)
+
+class PaymentFulfillmentList(SuperUserMixin, ListView):
+    queryset = Payment.objects.filter(status='Credit', fulfilled=False)
+
