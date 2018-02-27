@@ -138,12 +138,12 @@ class Payment(models.Model):
     longurl = models.URLField()
     shorturl = models.URLField()
     status = models.CharField(max_length=16)
+    fulfilled = models.BooleanField(default=False)
 
     def __str__(self):
         return "<Payment: {}-{}-{}>".format(self.user, self.item, self.payment_date)
 
 class Box(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     shipped_at = models.DateTimeField(null=True, blank=True)
     books = models.ManyToManyField(Book)
