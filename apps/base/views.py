@@ -17,7 +17,7 @@ import hmac
 import hashlib
 from allauth.socialaccount.models import SocialAccount
 
-from .models import Genre, Author, Publisher, Book, Profile, Item, Payment
+from .models import Genre, Author, Publisher, Book, Profile, Item, Payment, Box
 from .forms import ProfileForm
 from utils import has_profile
 
@@ -168,3 +168,6 @@ class ItemList(ListView):
     model = Item
 
     ordering = ['pk']
+
+class BoxDetail(DetailView):
+    model = Box

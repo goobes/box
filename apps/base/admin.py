@@ -2,7 +2,7 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 from allauth.socialaccount.models import SocialAccount
-from .models import Genre, Publisher, Author, Book, Profile, Item, Payment
+from .models import Genre, Publisher, Author, Book, Profile, Item, Payment, Box
 
 for m in [Genre, Publisher, Item]:
     admin.site.register(m)
@@ -24,6 +24,7 @@ class BookAdmin(admin.ModelAdmin):
 class PaymentAdmin(admin.ModelAdmin):
     fields = ['user', 'item', 'payment_date', 'payment_id', 'payment_request_id', 'amount', 'fees', 'status', 'longurl' ,'shorturl']
     list_display = ['payment_request_id', 'user', 'item', 'payment_date', 'amount', 'status']
+    readonly_fields = ['payment_date']
     list_display_links = ['payment_request_id', 'user']
 
 @admin.register(Profile)
@@ -43,3 +44,9 @@ class ProfileAdmin(admin.ModelAdmin):
 
     def profile_link(self, obj):
         return mark_safe("<a href='{}'>View profile</a>".format(obj.get_absolute_url()))
+
+@admin.register(Box)
+class BoxAdmin(admin.ModelAdmin):
+    fields = ( 'user', 'shipped_at', 'books', 'payment')
+    list_display = ( 'user', 'created_at', 'shipped_at', )
+    autocomplete_fields = ('books',)

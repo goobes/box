@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load socialaccount %}
+{% load ratings %}
 
 {% block content %}
 <section>
@@ -113,9 +114,14 @@
           </div>
       </div>
       <div class="row">
-          <div class="col-md-4">
+          <div class="col-md-6">
               <h2>Favourite Books and Authors</h2>
           </div>
+          {% if user == object.user %}
+          <div class="col-md-4">
+              <a href="{% url 'profile-edit' %}" style="margin-top: 40px" class="btn btn-primary">Edit</a>
+          </div>
+          {% endif %}
       </div>
       <div class="row">
           <div class="col-md-2">
@@ -131,6 +137,19 @@
             {% endfor %}
           </div>
       </div>
+      <div class="row">
+          <div class="col-md-4"><h2>Boxes</h2></div>
+      </div>
+      {% for box in object.user.box_set.all %}
+      {% if box.shipped_at %}
+      <div class="row">
+          <div class="col-md-4">
+              <a href="{% url 'box-review' pk=box.id %}">{{ box.shipped_at }}</a>
+              {% ratings box read_only=True %}
+          </div>
+      </div>
+      {% endif %}
+      {% endfor %}
   </div>
 </section>
 {% include "socialaccount/snippets/login_extra.html" %}

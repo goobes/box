@@ -3,6 +3,8 @@
 from django.db import models
 from django.conf import settings
 from django.urls import reverse
+from django.contrib.contenttypes.fields import GenericRelation
+from star_ratings.models import Rating
 
 STATES = (
     (u'AP', u'ANDHRA PRADESH'),
@@ -88,6 +90,9 @@ class Book(models.Model):
     publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE)
     year_of_publication = models.CharField(max_length=50, blank=True)
 
+    class Meta:
+        ordering = ['title']
+
     def __str__(self):
         return "<Book: %s>" % self.title
 
@@ -125,7 +130,7 @@ class Item(models.Model):
 class Payment(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
-    payment_date = models.DateTimeField(db_index=True)
+    payment_date = models.DateTimeField(auto_now_add=True, db_index=True)
     payment_id = models.CharField(max_length=64)
     payment_request_id = models.CharField(max_length=64)
     amount = models.DecimalField(max_digits=7, decimal_places=2)
@@ -133,3 +138,18 @@ class Payment(models.Model):
     longurl = models.URLField()
     shorturl = models.URLField()
     status = models.CharField(max_length=16)
+
+    def __str__(self):
+        return "<Payment: {}-{}-{}>".format(self.user, self.item, self.payment_date)
+
+class Box(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    shipped_at = models.DateTimeField(null=True, blank=True)
+    books = models.ManyToManyField(Book)
+    ratings = GenericRelation(Rating, related_query_name='boxes', blank=True)
+    payment = models.ForeignKey(Payment, on_delete=models.CASCADE)
+    notification_sent = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name_plural = 'boxes'

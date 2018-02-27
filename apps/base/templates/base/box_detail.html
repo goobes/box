@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load ratings %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'star-ratings/css/star-ratings.css' %}">
+{% endblock %}
+
+{% block content %}
+<section>
+  <div class="container">
+    <div class="row">
+        <div class="col-md-10">
+            {{ object.shipped_at }} 
+        </div>
+    </div> 
+    <div class="row">
+        <div class="col-md-6">
+            <ul>
+          {% for book in object.books.all %}
+            <li>{{ book.title }}</li>
+          {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+          {% if user == object.user %}
+            {% ratings object %}
+          {% else %}
+            {% ratings object read_only=True %}
+          {% endif %}
+        </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="{% static 'star-ratings/js/dist/star-ratings.min.js' %}"></script>
+{% endblock %}
