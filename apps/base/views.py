@@ -11,6 +11,7 @@ from django.conf import settings
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import UserPassesTestMixin
+from django.views.decorators.csrf import csrf_exempt
 from instamojo_wrapper import Instamojo
 from datetime import datetime, timedelta
 import logging
@@ -103,7 +104,7 @@ def payment_redirect(request, pk):
     logger.info("payment_redirect: payment_request_id - {}".format(payment.payment_request_id))
     return render(request, 'base/payment_complete.html')
 
-
+@csrf_exempt
 def payment_webhook(request):
     data = request.POST.dict()
     mac = data.pop("mac")
