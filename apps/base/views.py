@@ -20,7 +20,7 @@ import hashlib
 from allauth.socialaccount.models import SocialAccount
 
 from .models import Genre, Author, Publisher, Book, Profile, Item, Payment, Box
-from .forms import ProfileForm, BoxForm
+from .forms import ProfileForm, BoxForm, BookForm
 from utils import has_profile
 
 logger = logging.getLogger(__name__)
@@ -109,7 +109,7 @@ def payment_webhook(request):
     data = request.POST.dict()
     mac = data.pop("mac")
     message = "|".join(v for k, v in sorted(data.items(), key=lambda x: x[0].lower()))
-    mac_calculated = hmac.new(settings.INSTAMOJO['SALT'], message, hashlib.sha1).hexdigest()
+    mac_calculated = hmac.new(settings.INSTAMOJO['SALT'].encode(), message.encode(), hashlib.sha1).hexdigest()
     logger.info("payment_webhook: mac - {}".format(mac))
     logger.info("payment_webhook: calculated mac - {}".format(mac_calculated))
     if mac_calculated == mac:
@@ -206,3 +206,6 @@ class BoxCreate(SuperUserMixin, FormView):
 class PaymentFulfillmentList(SuperUserMixin, ListView):
     queryset = Payment.objects.filter(status='Credit', fulfilled=False)
 
+class BookCreate(CreateView):
+    model = Book
+    form_class = BookForm
