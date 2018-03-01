@@ -1,7 +1,7 @@
 
 from django import forms
-from django_select2.forms import ModelSelect2MultipleWidget
-from .models import Profile, Book, Author, Box
+from django_select2.forms import ModelSelect2MultipleWidget, ModelSelect2Widget
+from .models import Profile, Book, Author, Box, Publisher
 
 class ProfileForm(forms.ModelForm):
     class Meta:
@@ -23,3 +23,22 @@ class BoxForm(forms.Form):
         search_fields=['title__icontains'],
         attrs={'data-placeholder': 'Search for Book titles', 'data-width': '20em' }
         ), queryset=Book.objects.all(), required=True)
+
+class BookForm(forms.ModelForm):
+    class Meta:
+        model = Book
+        fields = (
+            'title', 'ol_id', 'isbn', 'genres', 'authors', 'publisher', 'year_of_publication'
+            )
+        widgets = {
+            'authors': ModelSelect2MultipleWidget(
+                queryset=Author.objects.all(),
+                search_fields=['name__icontains'],
+                attrs={'data-placeholder': 'Search for Author name', 'data-width': '20em' }
+            ),
+            'publisher': ModelSelect2Widget(
+                queryset=Publisher.objects.all(),
+                search_fields=['name__icontains'],
+                attrs={'data-placeholder': 'Search for Publisher name', 'data-width': '20em'} 
+            )
+        }
