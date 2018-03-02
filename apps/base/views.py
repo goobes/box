@@ -138,7 +138,7 @@ def payment_webhook(request):
                 'Payment received for: {}'.format(payment.item.name),
                 EMAIL_PAYMENT_RECEIVED.format(username=payment.user.username),
                 "no-reply@box.goobes.in",
-                [payment.user.email]
+                [payment.user.email],
                 fail_silently=False
             )
         payment.save()
