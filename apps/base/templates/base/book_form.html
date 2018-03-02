@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block head %}
+  {{ form.media.css }}
+{% endblock %}
+
+{% block content %}
+<section>
+    <form action="" method="post">
+        {% csrf_token %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <h1>Add Book</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+            Please enter the OL ID of the book. It is a string starting with OL and ending in M. We will auto-populate whatever fields we find from the OpenLibrary record for the book. The 'Author - auto' and 'Publisher - auto' are fields which are auto-populated. If you find these fields incorrect or would like to add more Authors, use the autocomplete Authors field.
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+              {{ form.errors }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+                OL ID
+            </div>
+            <div class="col-md-4">
+                {{ form.ol_id }}
+            </div>
+        </div>
+        {% include 'base/_form_field.html' with field=form.title %}
+        {% include 'base/_form_field.html' with field=form.isbn %}
+        {% include 'base/_form_field.html' with field=form.genres %}
+        <div class="row">
+            <div class="col-md-2">
+              Author - auto
+            </div>
+            <div class="col-md-4">
+                <select name="author_auto" multiple="multiple" id="author_auto">
+                </select>
+            </div>
+        </div>
+        {% include 'base/_form_field.html' with field=form.authors %}
+        <div class="row">
+            <div class="col-md-2">
+            Publisher - auto
+            </div>
+            <div class="col-md-4">
+              <input name="publisher_auto" type="text" class="form-control" id="publisher_auto"> 
+            </div>
+        </div>
+        {% include 'base/_form_field.html' with field=form.publisher %}
+        {% include 'base/_form_field.html' with field=form.year_of_publication %}
+        <div class="row">
+            <div class="col-md-6 pull-right">
+                <button type="submit" name="_addanother" value="add" class="btn btn-secondary">Save and add another</button>
+                <button type="submit" name="submit" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+    </form>
+</section>
+{% endblock %}
+
+{% block scripts %}
+  {{ form.media.js }}
+<script type="text/javascript">
+$(function() {
+    $("#id_ol_id").on('input propertychange paste', function() {
+        var ol_id = $("#id_ol_id").val();
+        if (ol_id.endsWith("M")) {
+          $.getJSON("https://openlibrary.org/books/" + ol_id + ".json", function (data) {
+              console.log(data);
+              $("#id_title").val(data.title);
+              if (data.isbn_13) {
+                $("#id_isbn").val(data.isbn_13);
+              }
+              $("#publisher_auto").val(data.publishers[0]);
+              $.getJSON("https://openlibrary.org" + data.works[0].key + ".json", function(dataworks) {
+                  for (var i=0; i < dataworks.authors.length; i++) {
+                    $("#author_auto").append($("<option value='" + dataworks.authors[i].author.key + "' selected='selected'>" + dataworks.authors[0].author.key + "</option>" ));
+                  }
+              });
+          }).error(function(error) { alert("This OL ID does not exist"); });
+        }
+    });
+});
+</script>
+{% endblock %}

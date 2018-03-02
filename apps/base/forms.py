@@ -42,3 +42,8 @@ class BookForm(forms.ModelForm):
                 attrs={'data-placeholder': 'Search for Publisher name', 'data-width': '20em'} 
             )
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['authors'].required = False
+        self.fields['publisher'].required = False

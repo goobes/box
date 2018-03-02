@@ -6,7 +6,7 @@ from django.views.generic import TemplateView
 from .views import ( home, ProfileCreate, ProfileUpdate, ProfileDetail, 
         search_book_title, search_author_name, check_profile )
 from .views import make_payment, payment_redirect, payment_webhook, ItemList
-from .views import BoxDetail, BoxCreate, PaymentFulfillmentList
+from .views import BoxDetail, BoxCreate, PaymentFulfillmentList, BookCreate
 
 urlpatterns = [
     url(r'^$', home, name='home'),
@@ -26,4 +26,5 @@ urlpatterns = [
     url(r'^box/review/(?P<pk>[^/]+)$', BoxDetail.as_view(), name="box-review"),
     url(r'^box/create/(?P<pk>[^/]+)$', BoxCreate.as_view(), name="box-create"),
     url(r'^payment/fulfillment/$', PaymentFulfillmentList.as_view(), name="payment-fulfillment"),
+    url(r'^book/add/$', BookCreate.as_view(), name="book-create"),
 ]

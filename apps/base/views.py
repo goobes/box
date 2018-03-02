@@ -206,6 +206,21 @@ class BoxCreate(SuperUserMixin, FormView):
 class PaymentFulfillmentList(SuperUserMixin, ListView):
     queryset = Payment.objects.filter(status='Credit', fulfilled=False)
 
-class BookCreate(CreateView):
+class BookCreate(SuperUserMixin, CreateView):
     model = Book
     form_class = BookForm
+
+    def get_success_url(self):
+        if self.request.POST.get("_addanother"):
+            return reverse("book-create")
+        else:
+            return reverse("home")
+
+    def form_valid(self, form):
+        form.instance.publisher, created = Publisher.objects.get_or_create(name=self.request.POST.get("publisher_auto"))
+        response = super().form_valid(form)
+        for author in self.request.POST.getlist("author_auto"):
+            ol_id = author.split("/")[-1]
+            form.instance.authors.add(Author.objects.get(ol_id=ol_id))
+
+        return response
