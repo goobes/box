@@ -195,7 +195,11 @@ class SuperUserMixin(UserPassesTestMixin):
     def test_func(self):
         return self.request.user.is_superuser
 
-class BoxCreate(SuperUserMixin, FormView):
+class StaffUserMixin(UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.is_staff
+
+class BoxCreate(StaffUserMixin, FormView):
     model = Box
     form_class = BoxForm
     template_name = "base/box_create.html"
@@ -220,10 +224,10 @@ class BoxCreate(SuperUserMixin, FormView):
             payment.save()
         return super().form_valid(form)
 
-class PaymentFulfillmentList(SuperUserMixin, ListView):
+class PaymentFulfillmentList(StaffUserMixin, ListView):
     queryset = Payment.objects.filter(status='Credit', fulfilled=False)
 
-class BookCreate(SuperUserMixin, CreateView):
+class BookCreate(StaffUserMixin, CreateView):
     model = Book
     form_class = BookForm
 
