@@ -12,6 +12,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.views.decorators.csrf import csrf_exempt
+from django.core.mail import send_mail
 from instamojo_wrapper import Instamojo
 from datetime import datetime, timedelta
 import logging
@@ -22,6 +23,15 @@ from allauth.socialaccount.models import SocialAccount
 from .models import Genre, Author, Publisher, Book, Profile, Item, Payment, Box
 from .forms import ProfileForm, BoxForm, BookForm
 from utils import has_profile
+
+EMAIL_PAYMENT_RECEIVED = """
+Hi {username},
+You will be receiving your box shortly, do let us know how you like our selection of books.
+
+Please feel free to contact us at goobesbookrepublic@gmail.com if you need any clarifications.
+
+Team Goobe's Subscription Box
+"""
 
 logger = logging.getLogger(__name__)
 
@@ -124,6 +134,13 @@ def payment_webhook(request):
         if payment.status == 'Credit':
             payment.user.profile.boxes_remaining = payment.user.profile.boxes_remaining + payment.item.boxes_added
             payment.user.profile.save()
+            send_mail(
+                'Payment received for: {}'.format(payment.item.name),
+                EMAIL_PAYMENT_RECEIVED.format(username=payment.user.username),
+                "no-reply@box.goobes.in",
+                [payment.user.email]
+                fail_silently=False
+            )
         payment.save()
         return HttpResponse(status_code=200)
     else:
