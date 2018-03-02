@@ -217,6 +217,7 @@ class BoxCreate(StaffUserMixin, FormView):
         box = Box(payment=payment)
         if form.cleaned_data['shipped']:
             box.shipped_at = datetime.now()
+        box.tracking_code = form.cleaned_data['tracking_code']
         box.save()
         box.books.set(form.cleaned_data['books'])
         if payment.box_set.count() >= payment.item.boxes_added:

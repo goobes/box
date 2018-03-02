@@ -150,6 +150,7 @@ class Box(models.Model):
     ratings = GenericRelation(Rating, related_query_name='boxes', blank=True)
     payment = models.ForeignKey(Payment, on_delete=models.CASCADE)
     notification_sent = models.BooleanField(default=False)
+    tracking_code = models.CharField(max_length=128, db_index=True, blank=True)
 
     class Meta:
         verbose_name_plural = 'boxes'

@@ -23,6 +23,7 @@ class BoxForm(forms.Form):
         search_fields=['title__icontains'],
         attrs={'data-placeholder': 'Search for Book titles', 'data-width': '20em' }
         ), queryset=Book.objects.all(), required=True)
+    tracking_code = forms.CharField(required=False)
 
 class BookForm(forms.ModelForm):
     class Meta:
