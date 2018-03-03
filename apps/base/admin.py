@@ -22,7 +22,7 @@ class BookAdmin(admin.ModelAdmin):
 
 @admin.register(Payment)
 class PaymentAdmin(admin.ModelAdmin):
-    fields = ['user', 'item', 'payment_date', 'payment_id', 'payment_request_id', 'amount', 'fees', 'status', 'longurl' ,'shorturl']
+    fields = ['user', 'item', 'payment_date', 'payment_id', 'payment_request_id', 'amount', 'fees', 'status', 'longurl' ,'shorturl', 'fulfilled']
     list_display = ['payment_request_id', 'user', 'item', 'payment_date', 'amount', 'status']
     readonly_fields = ['payment_date']
     list_display_links = ['payment_request_id', 'user']
