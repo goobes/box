@@ -20,7 +20,7 @@
           </div>
           {% endif %}
       </div>
-      {% if user == object.user or user.is_superuser %}
+      {% if user == object.user or user.is_staff %}
       <div class="row">
           <div class="col-md-4">
               <h2>Address/Contact Details</h2>
@@ -63,7 +63,9 @@
             Congratulations you have linked your Facebook account
           {% else %}
             No linked Facebook account
+            {% if user == object.user %}
             <a href="{% provider_login_url 'facebook' process='connect' %}" class="btn socialaccount_provider facebook">Connect Facebook</a>
+            {% endif %}
           {% endif %}
           </div>
       </div>
@@ -73,12 +75,14 @@
             Congratulations you have linked your Goodreads account. We can now make useful recommendations based on books you have read and reviewed.
           {% else %}
             There is no linked Goodreads account. Please connect your Goodreads account so we can make useful recommendations based on books you have read and reviewed.
+            {% if user == object.user %}
             <a href="{% provider_login_url 'goodreads' process='connect' %}" class="btn socialaccount_provider goodreads">Connect Goodreads</a>
+            {% endif %}
           {% endif %}
           </div>
       </div>
 
-      {% if user.is_superuser and goodreads %}
+      {% if user.is_staff and goodreads %}
       <div class="row">
           <div class='col-md-6'>
               Goodreads profile information: <a href="https://www.goodreads.com/user/show/{{ goodreads.uid }}">link</a><br>
