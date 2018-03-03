@@ -154,3 +154,4 @@ class Box(models.Model):
 
     class Meta:
         verbose_name_plural = 'boxes'
+        ordering = ['-shipped_at']

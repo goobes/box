@@ -226,7 +226,12 @@ class BoxCreate(StaffUserMixin, FormView):
         return super().form_valid(form)
 
 class PaymentFulfillmentList(StaffUserMixin, ListView):
-    queryset = Payment.objects.filter(status='Credit', fulfilled=False)
+    queryset = Payment.objects.filter(status='Credit', fulfilled=False, item__boxes_added=1)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['multiple_boxes'] = Payment.objects.filter(status='Credit', fulfilled=False, item__boxes_added__gt=1)
+        return context
 
 class BookCreate(StaffUserMixin, CreateView):
     model = Book

@@ -5,8 +5,13 @@
     <div class="container">
         <div class="row">
             <div class="col-md-4">
-                <h2>Payment Fulfillment</h2>
+                <h1>Payment Fulfillment</h1>
                 <a href="/admin/base/box">Admin view</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <h2>Single Boxes</h2>
             </div>
         </div>
         <div class="row">
@@ -23,7 +28,7 @@
                     {% if object_list %}
                       {% for object in object_list %}
                       <tr>
-                          <td>{{ object.user }}</td>
+                          <td><a href="{% url 'profile-detail' pk=object.user.profile.id %}">{{ object.user }}</a></td>
                           <td>{{ object.payment_date }}</td>
                           <td>{{ object.amount }}</td>
                           <td>{{ object.box_set.all.count }}</td>
@@ -34,6 +39,37 @@
                     </tbody>
                 </table>
             </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <h2>Multiple Boxes</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <table border="1" cellspacing="5" cellpadding="5">
+                    <thead>
+                        <th>User</th>
+                        <th>Payment Date</th>
+                        <th>Amount</th>
+                        <th>Boxes Sent</th>
+                        <th>Last Box Sent On</th>
+                        <th>Days since last box</th>
+                        <th>Action</th>
+                    </thead>
+                    {% for payment in multiple_boxes %}
+                    <tr>
+                        <td><a href="{% url 'profile-detail' pk=payment.user.profile.id %}">{{ payment.user }}</a></td>
+                        <td>{{ payment.payment_date }}</td>
+                        <td>{{ payment.amount }}</td>
+                        <td>{{ payment.box_set.all.count }}</td>
+                        <td>{{ payment.box_set.first.shipped_at }}</td>
+                        <td>{{ payment.box_set.first.shipped_at|timesince }}</td>
+                        <td><a href="{% url 'box-create' pk=payment.id %}" class="btn btn-primary">Create Box</a></td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div> 
         </div>
     </div>
 </section>
