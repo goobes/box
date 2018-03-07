@@ -226,11 +226,11 @@ class BoxCreate(StaffUserMixin, FormView):
         return super().form_valid(form)
 
 class PaymentFulfillmentList(StaffUserMixin, ListView):
-    queryset = Payment.objects.filter(status='Credit', fulfilled=False, item__boxes_added=1)
+    queryset = Payment.objects.filter(status='Credit', fulfilled=False, item__boxes_added=1).order_by('payment_date')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['multiple_boxes'] = Payment.objects.filter(status='Credit', fulfilled=False, item__boxes_added__gt=1)
+        context['multiple_boxes'] = Payment.objects.filter(status='Credit', fulfilled=False, item__boxes_added__gt=1).order_by('payment_date')
         return context
 
 class BookCreate(StaffUserMixin, CreateView):
