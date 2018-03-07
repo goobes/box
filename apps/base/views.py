@@ -142,10 +142,10 @@ def payment_webhook(request):
                 fail_silently=False
             )
         payment.save()
-        return HttpResponse(status_code=200)
+        return HttpResponse(status=200)
     else:
         logger.error("webhook failed mac calculation")
-        return HttpResponse(status_code=400)
+        return HttpResponse(status=400)
 
 class ProfileCreate(CreateView):
     model = Profile
