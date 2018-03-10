@@ -101,7 +101,14 @@
                             <div class="price-info">
                                 <span>{{ item.description }}</span>
                                 <span>{{ item.boxes_added }} months</span>
-                                <p class="price"><span><img src="{% static 'img/rupee.png' %}" style="float: left">{{ item.price }}</span></p>
+                                <p class="price"><span><img src="{% static 'img/rupee.png' %}" style="float: left">
+                                    {% if item.boxes_added > 1 %}
+                                    {% widthratio item.price item.boxes_added 1 %} x {{ item.boxes_added }} <sup>*EMI</sup>
+                                    {% else %}
+                                      {{ item.price }}
+                                    {% endif %}
+                                </span>
+                                </p>
                             </div>
                             <a href="{% url 'payment-create' pk=item.id %}" class="btn pricing-btn">Buy Now</a>
                         </div>    
