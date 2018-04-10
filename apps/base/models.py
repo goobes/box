@@ -20,6 +20,7 @@ STATES = (
     (u'JK', u'JAMMU & KASHMIR'),
     (u'JS', u'JHARKHAND'),
     (u'KA', u'KARNATAKA'),
+    (u'KL', u'KERALA'),
     (u'MP', u'MADHYA PRADESH'),
     (u'MH', u'MAHARASHTRA'),
     (u'MN', u'MANIPUR'),
